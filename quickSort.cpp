@@ -76,39 +76,27 @@ list<elemType>		quick_sort_1( list<elemType>   &iList )
 // -------------------------------------------------------------
 //              quick sort --- in-place version
 // -------------------------------------------------------------
-template	< typename   elemType, typename   IterType >
-void		swap( IterType   a, IterType   b )
+template	< typename   InputIter, typename   outputIter >
+outputIter 	partition( 	InputIter   left, InputIter   right, 
+						InputIter   pivotIndex, outputIter   storeIndex )
 {
-	elemType	temp;
+	// check validity
+	if ( left != right )
+	{
+		// move pivot to end
+		iter_swap( pivotIndex, right );
 
-	temp = (*a);
-	*a = (*b);
-	*b = (*a);
-}
+		// main loop
+		for ( ; left != right; ++left )
+		 	if ( *left < *pivotIndex )
+		 	{
+		 		iter_swap( left, storeIndex );
+		 		++storeIndex;
+		 	};
 
-
-
-
-
-template	< typename   elemType, typename   IterType >
-IterType 	partition( IterType   left, IterType   right, IterType   pivotIndex )
-{
-	elemType		pivot = *pivotIndex;
-	IterType 		storeIndex = left;
-
-	// move pivot to end
-	swap( pivotIndex, right );
-
-	// main loop
-	for ( ; left < right; ++left )
-	 	if ( *left < pivot )
-	 	{
-	 		swap( left, storeIndex );
-	 		++storeIndex;
-	 	};
-
-	// move pivot to its final place
-	 	swap( storeIndex, right );
+		// move pivot to its final place
+		 	iter_swap( storeIndex, right );
+	}
 
 	return 	storeIndex;
 }
@@ -121,22 +109,38 @@ void	quick_sort_2( IterType   left, IterType   right )
 	int 		size;
 	IterType	iter = left, pivotIndex = left;
 
+
 	// calculate the size
 	for ( size = 1; iter != right; ++size, ++iter ) 	{
 	}
 
 
-	// if 'left' > 'right', swap them
-	if ( *left > *right )
+	//  ??????????????????????????????
+	if ( size >=1 )
 	{
-		swap( left, right );
-	}
+		cout << "About to call quick_sort_2: " << endl;
+
+		if ( size == 1 )
+			cout << *iter << endl;
+		else
+			for ( ; iter != last; ++iter )
+				cout << "    " << *iter;
+
+		cout << "   " << endl;
+	};
+
+	iter = left;
+
+
+
+	// if 'left' > 'right', my_swap them
+	if ( *left > *right )
+		iter_swap( left, right );
 
 	// if the list has 1 or 2 elements
 	if ( size <= 2 )
-	{
 		return;
-	}
+
 
 	// right now the list has more than 2 elements and 'left' <= 'right' 
 
@@ -146,7 +150,7 @@ void	quick_sort_2( IterType   left, IterType   right )
 	}
 
 	// get lists of bigger and smaller elements and final position of pivot
-	pivotIndex = partition( left, right, pivotIndex );
+	pivotIndex = partition( left, right, pivotIndex, left );
 
 	// recursively sort elements smaller than the pivot
 	iter = pivotIndex;
@@ -174,6 +178,11 @@ int	main(int argc, char* argv[])
 	//iList.reserve(num_items);
 	generate_n( std::back_inserter(iList), num_items, gen_rand );
 
+	// print the list
+	std::ostream_iterator<int>	os( cout, "\t\t" );
+	copy( iList.begin(), iList.end(), os );
+	cout << "\n\n\n" << endl;
+
 
 
 	// call sort function
@@ -182,7 +191,7 @@ int	main(int argc, char* argv[])
 
 
 	// print the list
-	std::ostream_iterator<int>	os( cout, "\t\t" );
+	//std::ostream_iterator<int>	os( cout, "\t\t" );
 	copy( iList.begin(), iList.end(), os );
 	cout << endl;
 
