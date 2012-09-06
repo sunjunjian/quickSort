@@ -22,7 +22,7 @@ list<elemType>		my_concatenate( list<elemType>   less,
 {
 	// notice the difference between insert() and splice()
 	greater.insert( greater.begin(), pivot );
-	less.insert( less.end(), greater.begin(), greater.end() );
+	less.splice( less.end(), greater );
 
 	return	less;
 }
