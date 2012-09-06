@@ -1,0 +1,6 @@
+if test $# -eq 0
+then
+echo "      Please append a positive number which will be a size of the sorting!"
+else
+./quickSort $1
+fi

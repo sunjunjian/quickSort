@@ -1,0 +1,2 @@
+rm quickSort quickSort.o
+make
