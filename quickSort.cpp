@@ -29,7 +29,7 @@ list<elemType>		my_concatenate( list<elemType>   less,
 
 
 template		< typename	elemType>
-list<elemType>		quick_sort( list<elemType>   &iList )
+list<elemType>		quick_sort_1( list<elemType>   &iList )
 {
 	int 	middle = iList.size()/2;
 	// an list of size 0 or 1 is already sorted
@@ -64,9 +64,96 @@ list<elemType>		quick_sort( list<elemType>   &iList )
 			greater.push_back( *first );
 	};
 
-	iList = my_concatenate( quick_sort(less), pivot, quick_sort(greater) );
+	// assembly sorted sub-lists
+	iList = my_concatenate( quick_sort_1(less), pivot, quick_sort_1(greater) );
 
 	return	iList;
+}
+
+
+
+
+// -------------------------------------------------------------
+//              quick sort --- in-place version
+// -------------------------------------------------------------
+template	< typename   elemType, typename   IterType >
+void		swap( IterType   a, IterType   b )
+{
+	elemType	temp;
+
+	temp = (*a);
+	*a = (*b);
+	*b = (*a);
+}
+
+
+
+
+
+template	< typename   elemType, typename   IterType >
+IterType 	partition( IterType   left, IterType   right, IterType   pivotIndex )
+{
+	elemType		pivot = *pivotIndex;
+	IterType 		storeIndex = left;
+
+	// move pivot to end
+	swap( pivotIndex, right );
+
+	// main loop
+	for ( ; left < right; ++left )
+	 	if ( *left < pivot )
+	 	{
+	 		swap( left, storeIndex );
+	 		++storeIndex;
+	 	};
+
+	// move pivot to its final place
+	 	swap( storeIndex, right );
+
+	return 	storeIndex;
+}
+
+
+
+template		< typename	IterType>
+void	quick_sort_2( IterType   left, IterType   right )
+{
+	int 		size;
+	IterType	iter = left, pivotIndex = left;
+
+	// calculate the size
+	for ( size = 1; iter != right; ++size, ++iter ) 	{
+	}
+
+
+	// if 'left' > 'right', swap them
+	if ( *left > *right )
+	{
+		swap( left, right );
+	}
+
+	// if the list has 1 or 2 elements
+	if ( size <= 2 )
+	{
+		return;
+	}
+
+	// right now the list has more than 2 elements and 'left' <= 'right' 
+
+	// choose 'pivotIndex' as the middle
+	size /= 2;
+	for ( int i = 1; i <= size/2; ++i, ++pivotIndex )	{
+	}
+
+	// get lists of bigger and smaller elements and final position of pivot
+	pivotIndex = partition( left, right, pivotIndex );
+
+	// recursively sort elements smaller than the pivot
+	iter = pivotIndex;
+	quick_sort_2( left, --iter );
+
+	// recursively sort elements smaller than the pivot
+	quick_sort_2( pivotIndex, right );
 }
 
 
@@ -90,7 +177,9 @@ int	main(int argc, char* argv[])
 
 
 	// call sort function
-	iList = quick_sort( iList );
+	quick_sort_2( iList.begin(), --iList.end() );
+
+
 
 	// print the list
 	std::ostream_iterator<int>	os( cout, "\t\t" );
