@@ -76,27 +76,32 @@ list<elemType>		quick_sort_1( list<elemType>   &iList )
 // -------------------------------------------------------------
 //              quick sort --- in-place version
 // -------------------------------------------------------------
-template	< typename   InputIter, typename   outputIter >
+template	< typename   elemType, typename   InputIter, typename   outputIter >
 outputIter 	partition( 	InputIter   left, InputIter   right, 
-						InputIter   pivotIndex, outputIter   storeIndex )
+						InputIter   pivotIndex, outputIter   storeIndex, const elemType	  pivot )
 {
-	// check validity
-	if ( left != right )
-	{
-		// move pivot to end
-		iter_swap( pivotIndex, right );
+	// ????????
+	cout << "About to call partition: " << *left << " - " << *right << " - " << *pivotIndex << " - "
+			<< *storeIndex << " - " << pivot << "\n" << endl;
 
-		// main loop
-		for ( ; left != right; ++left )
-		 	if ( *left < *pivotIndex )
-		 	{
-		 		iter_swap( left, storeIndex );
-		 		++storeIndex;
-		 	};
 
-		// move pivot to its final place
-		 	iter_swap( storeIndex, right );
-	}
+
+	// move pivot to end
+	cout << "About to swap pivotIndex & right: " << *pivotIndex << "..." << *right << "\n" << endl; 
+	iter_swap( pivotIndex, right );
+
+	// main loop
+	for ( ; left != right; ++left )
+	 	if ( *left < pivot && left != storeIndex)
+	 	{
+			cout << "About to swap left & storeIndex: " << *left << "..." << *storeIndex << "\n" << endl; 
+	 		iter_swap( left, storeIndex );
+	 		++storeIndex;
+	 	};
+
+	// move pivot to its final place
+	cout << "About to swap storeIndex & right: " << *storeIndex << "..." << *right << "\n" << endl; 
+ 	iter_swap( storeIndex, right );
 
 	return 	storeIndex;
 }
@@ -104,38 +109,39 @@ outputIter 	partition( 	InputIter   left, InputIter   right,
 
 
 template		< typename	IterType>
-void	quick_sort_2( IterType   left, IterType   right )
+void	quick_sort_2( IterType   left, IterType   right, IterType   end )
 {
 	int 		size;
 	IterType	iter = left, pivotIndex = left;
 
+	// check validity
+	if ( left == right )
+	{
+		return;
+	}
 
 	// calculate the size
 	for ( size = 1; iter != right; ++size, ++iter ) 	{
 	}
 
 
-	//  ??????????????????????????????
-	if ( size >=1 )
+	// ????????
+	cout << "About to call quick_sort_2, size is " << size << "\n" << endl;
+	for ( iter = left; iter != end; ++iter )
 	{
-		cout << "About to call quick_sort_2: " << endl;
-
-		if ( size == 1 )
-			cout << *iter << endl;
-		else
-			for ( ; iter != last; ++iter )
-				cout << "    " << *iter;
-
-		cout << "   " << endl;
-	};
-
-	iter = left;
+		cout << "   " << *iter;
+	}
+	cout << "   " << endl;
+	// ????????
 
 
 
 	// if 'left' > 'right', my_swap them
 	if ( *left > *right )
+	{
+		cout << "About to swap left & right: " << *left << "..." << *right << "\n" << endl; 
 		iter_swap( left, right );
+	}
 
 	// if the list has 1 or 2 elements
 	if ( size <= 2 )
@@ -146,18 +152,21 @@ void	quick_sort_2( IterType   left, IterType   right )
 
 	// choose 'pivotIndex' as the middle
 	size /= 2;
-	for ( int i = 1; i <= size/2; ++i, ++pivotIndex )	{
+	for ( int i = 1; i <= size; ++i, ++pivotIndex )	{
 	}
 
 	// get lists of bigger and smaller elements and final position of pivot
-	pivotIndex = partition( left, right, pivotIndex, left );
+	pivotIndex = partition( left, right, pivotIndex, left, *pivotIndex );
+
+	cout << "New pivotIndex is: " << *pivotIndex << "........" << endl;
 
 	// recursively sort elements smaller than the pivot
 	iter = pivotIndex;
-	quick_sort_2( left, --iter );
+	if ( iter != left )
+		quick_sort_2( left, --iter, pivotIndex );
 
 	// recursively sort elements smaller than the pivot
-	quick_sort_2( pivotIndex, right );
+	quick_sort_2( ++pivotIndex, right, end );
 }
 
 
@@ -181,12 +190,12 @@ int	main(int argc, char* argv[])
 	// print the list
 	std::ostream_iterator<int>	os( cout, "\t\t" );
 	copy( iList.begin(), iList.end(), os );
-	cout << "\n\n\n" << endl;
+	cout << "\n" << endl;
 
 
 
 	// call sort function
-	quick_sort_2( iList.begin(), --iList.end() );
+	quick_sort_2( iList.begin(), --iList.end(), iList.end() );
 
 
 
